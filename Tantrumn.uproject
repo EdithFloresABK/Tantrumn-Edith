@@ -1,0 +1,13 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{EBFC62B9-41BA-DB88-F0D9-7D87E04374B7}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "Tantrumn",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
