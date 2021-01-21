@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "TantrumnCharacteBase.generated.h"
+#include "TantrumnCharacterBase.generated.h"
 
 UCLASS()
-class TANTRUMN_API ATantrumnCharacteBase : public ACharacter
+class TANTRUMN_API ATantrumnCharacterBase : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	ATantrumnCharacteBase();
+	ATantrumnCharacterBase();
 
 protected:
 	// Called when the game starts or when spawned

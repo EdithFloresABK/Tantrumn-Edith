@@ -1,10 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TantrumnCharacteBase.h"
+#include "TantrumnCharacterBase.h"
 
 // Sets default values
-ATantrumnCharacteBase::ATantrumnCharacteBase()
+ATantrumnCharacterBase::ATantrumnCharacterBase()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -12,21 +12,21 @@ ATantrumnCharacteBase::ATantrumnCharacteBase()
 }
 
 // Called when the game starts or when spawned
-void ATantrumnCharacteBase::BeginPlay()
+void ATantrumnCharacterBase::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ATantrumnCharacteBase::Tick(float DeltaTime)
+void ATantrumnCharacterBase::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void ATantrumnCharacteBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ATantrumnCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
