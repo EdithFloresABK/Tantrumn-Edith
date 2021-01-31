@@ -3,6 +3,8 @@
 
 #include "TantrumnCharacterBase.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 // Sets default values
 ATantrumnCharacterBase::ATantrumnCharacterBase()
 {
@@ -31,4 +33,5 @@ void ATantrumnCharacterBase::SetupPlayerInputComponent(UInputComponent* PlayerIn
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
+
 

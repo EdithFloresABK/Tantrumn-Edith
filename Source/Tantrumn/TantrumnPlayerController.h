@@ -23,6 +23,13 @@ protected:
     void RequestLookUp(float AxisValue);
     void RequestLookRight(float AxisValue);
     void RequestJump();
+	void RequestStopJump();
+    
+    void RequestCrouchStart();
+	void RequestCrouchEnd();
+	
+    void RequestSprintStart();
+    void RequestSprintEnd();
 
     /** Base lookup rate, in deg/sec. Other scaling may affect final lookup rate. */
     UPROPERTY(EditAnywhere, Category = "Look")
@@ -32,5 +39,7 @@ protected:
     UPROPERTY(EditAnywhere, Category = "Look")
     float BaseLookRightRate = 90.0f;
 
+	UPROPERTY(EditAnywhere, Category="Movement")
+	float SprintSpeed = 1200.0f;
    
 };
