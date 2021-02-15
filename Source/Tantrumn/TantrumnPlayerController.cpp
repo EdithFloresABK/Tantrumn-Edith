@@ -4,6 +4,7 @@
 #include "TantrumnPlayerController.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TantrumnCharacterBase.h"
 
 void ATantrumnPlayerController::SetupInputComponent()
@@ -61,6 +62,13 @@ void ATantrumnPlayerController::RequestJump()
 	if (GetCharacter())
 	{
 		GetCharacter()->Jump();
+
+		//SoundCue Triggers
+		if (JumpSound && GetCharacter()->GetCharacterMovement()->IsMovingOnGround())
+		{
+			FVector CharacterLocation = GetCharacter()->GetActorLocation();
+			UGameplayStatics::PlaySoundAtLocation(this, JumpSound, CharacterLocation);
+		}
 	}
 }
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "Sound/SoundCue.h"
 #include "TantrumnPlayerController.generated.h"
 
 /**
@@ -39,5 +40,10 @@ protected:
     /** Base lookright rate, in deg/sec. Other scaling may affect final lookup rate. */
     UPROPERTY(EditAnywhere, Category = "Look")
     float BaseLookRightRate = 90.0f;
+
+    /**Sound Cue for Jumping Sound. */
+
+    UPROPERTY(EditAnywhere, Category = "Sound")
+    USoundCue* JumpSound = nullptr;
 
 };

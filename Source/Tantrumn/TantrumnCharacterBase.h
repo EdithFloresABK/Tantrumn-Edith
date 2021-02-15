@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Sound/SoundCue.h"
 #include "TantrumnCharacterBase.generated.h"
 
 UCLASS()
@@ -45,6 +46,9 @@ protected:
 	//Time in Seconds
 	UPROPERTY(EditAnywhere, Category = "Fall Impact")
 	float MaxStunTime = 1.0f;
+	//Sound Cue Fall Impact
+	UPROPERTY(EditAnywhere, Category = "Fall Impact")
+	USoundCue* HeavyLandSound = nullptr;
 
 	float StunTime = 0.0f;
 	float StunBeginTimestamp = 0.0f;

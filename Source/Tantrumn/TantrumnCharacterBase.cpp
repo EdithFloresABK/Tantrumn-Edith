@@ -4,6 +4,7 @@
 #include "TantrumnCharacterBase.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "TantrumnPlayerController.h"
 
 // Sets default values
@@ -60,12 +61,22 @@ void ATantrumnCharacterBase::Landed(const FHitResult& Hit)
 			//nothing to do, very light fall
 			return;
 		}
+		else
+		{
+			//SoundCue Triggers
+			if (HeavyLandSound && GetOwner())
+			{
+				FVector CharacterLocation = GetOwner()->GetActorLocation();
+				UGameplayStatics::PlaySoundAtLocation(this, HeavyLandSound, CharacterLocation);
+			}
+		}
 
 		const float DeltaImpact = MaxImpactSpeed - MinImpactSpeed;
 		const float FallRatio = FMath::Clamp( (FallImpactSpeed - MinImpactSpeed) / DeltaImpact,0.0f,1.0f);
 		const bool bAffectSmall = FallRatio <= 0.5;
 		const bool bAffectLarge = FallRatio > 0.5;
 		TantrumnPlayerController->PlayDynamicForceFeedback(FallRatio, 0.5f, bAffectLarge, bAffectSmall, bAffectLarge, bAffectSmall);
+
 		if (bAffectLarge)
 		{
 			OnStunBegin(FallRatio);
