@@ -7,14 +7,15 @@
 #include "Sound/SoundCue.h"
 #include "TantrumnPlayerController.generated.h"
 
-/**
- * 
- */
+class ATantrumnGameModeBase;
+
 UCLASS()
 class TANTRUMN_API ATantrumnPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 public:
+
+	virtual void BeginPlay() override;
 
 protected:
 
@@ -45,5 +46,7 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "Sound")
     USoundCue* JumpSound = nullptr;
+
+	ATantrumnGameModeBase* GameModeRef;
 
 };
