@@ -14,10 +14,10 @@ void ATantrumnGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/*CurrentGameState = EGameState::Waiting;
+	CurrentGameState = EGameState::Waiting;
 	DisplayCountdown();
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATantrumnGameModeBase::StartGame, GameCountdownDuration, false);*/
-	StartGame();
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATantrumnGameModeBase::StartGame, GameCountdownDuration, false);
+	//StartGame();
 }
 
 void ATantrumnGameModeBase::Tick(float DeltaTime)
