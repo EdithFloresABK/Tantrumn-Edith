@@ -34,6 +34,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
 	void PlayerReachedEnd();
+	virtual void Tick(float DeltaTime) override;
 	
 private:
 
@@ -54,10 +55,23 @@ private:
 	TSubclassOf<UTantrumnGameWidget> GameWidgetClass; // Exposed class to check the type of widget to display
 
 	APlayerController* PC = nullptr;
+
+	FVector OnGroundLastPosition = FVector::ZeroVector; //Last Position on World when OnGround
+	FVector FallingPosition = FVector::ZeroVector; //Position From Player when it Hits KillZ
+	float CurrentTime = 0.0f; // Used to set a timer from Moving Player back to Ground
+	bool bIsPlayerBeingRescued = false;//Set to true when he hits KillZ
+	UPROPERTY(EditAnywhere, Category = "KillZ")
+	float TimeToRescuePlayer = 3.f;//Set time that takes to put Player back in Ground
+	UPROPERTY(EditAnywhere, Category = "KillZ")
+	float KillZ = -500.f;//Location at which World won't allow Player to keep falling
 	
 	// --- FUNCTIONS --- //
 
 	void DisplayCountdown();
 	void StartGame();
+	void DetectPlayerFallingOffWorld(float DeltaTime);
+	void MovingPlayerToGround(APawn* Player, float DeltaTime);
+	void RemovingInputFromPlayer(APawn* Player);
+	void RestoreInputToPlayer(APawn* Player);
 	
 };
