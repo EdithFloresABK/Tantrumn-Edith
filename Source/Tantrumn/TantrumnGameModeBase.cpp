@@ -13,9 +13,10 @@ void ATantrumnGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CurrentGameState = EGameState::Waiting;
+	/*CurrentGameState = EGameState::Waiting;
 	DisplayCountdown();
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATantrumnGameModeBase::StartGame, GameCountdownDuration, false);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATantrumnGameModeBase::StartGame, GameCountdownDuration, false);*/
+	StartGame();
 }
 
 EGameState ATantrumnGameModeBase::GetCurrentGameState() const
@@ -47,6 +48,8 @@ void ATantrumnGameModeBase::StartGame()
 {
 	CurrentGameState = EGameState::Playing;
 	FInputModeGameOnly InputMode;
+	PC = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	PC->SetInputMode(InputMode);
 	PC->SetShowMouseCursor(false);
+
 }

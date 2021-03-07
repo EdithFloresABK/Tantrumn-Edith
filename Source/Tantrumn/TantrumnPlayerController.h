@@ -8,6 +8,7 @@
 #include "TantrumnPlayerController.generated.h"
 
 class ATantrumnGameModeBase;
+class UUserWidget;
 
 UCLASS()
 class TANTRUMN_API ATantrumnPlayerController : public APlayerController
@@ -25,6 +26,11 @@ protected:
     void RequestMoveRight(float AxisValue);
     void RequestLookUp(float AxisValue);
     void RequestLookRight(float AxisValue);
+    void RequestThrowObject(float AxisValue);
+
+    void RequestPullObject();
+    void RequestStopPullObject();
+
     void RequestJump();
 	void RequestStopJump();
     
@@ -33,6 +39,12 @@ protected:
 	
     void RequestSprintStart();
     void RequestSprintEnd();
+
+    UPROPERTY(EditAnywhere, Category = "HUD")
+    TSubclassOf<class UUserWidget> HUDClass;
+
+    UPROPERTY()
+    UUserWidget* HUDWidget;
 
     /** Base lookup rate, in deg/sec. Other scaling may affect final lookup rate. */
     UPROPERTY(EditAnywhere, Category = "Look")
@@ -48,5 +60,12 @@ protected:
     USoundCue* JumpSound = nullptr;
 
 	ATantrumnGameModeBase* GameModeRef;
+
+    //used to determine flick of axis
+    //float LastDelta = 0.0f;
+    float LastAxis = 0.0f;
+
+    UPROPERTY(EditAnywhere, Category = "Input")
+    float FlickThreshold = 0.75f;
 
 };
