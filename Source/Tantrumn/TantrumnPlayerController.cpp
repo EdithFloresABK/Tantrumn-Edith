@@ -48,8 +48,7 @@ void ATantrumnPlayerController::SetupInputComponent()
 		InputComponent->BindAxis(TEXT("MoveRight"), this, &ATantrumnPlayerController::RequestMoveRight);
 		InputComponent->BindAxis(TEXT("LookUp"), this, &ATantrumnPlayerController::RequestLookUp);
 		InputComponent->BindAxis(TEXT("LookRight"), this, &ATantrumnPlayerController::RequestLookRight);
-		InputComponent->BindAxis(TEXT("ThrowObject"), this, &ATantrumnPlayerController::RequestThrowObject);
-		
+		InputComponent->BindAxis(TEXT("ThrowObjectGP"), this, &ATantrumnPlayerController::RequestThrowObject);
 	}
 }
 
