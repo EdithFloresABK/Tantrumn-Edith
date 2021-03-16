@@ -36,6 +36,9 @@ public:
 
 	virtual void Landed(const FHitResult& Hit) override;
 
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
+
 	void RequestSprintStart();
 	void RequestSprintEnd();
 
@@ -88,6 +91,10 @@ protected:
 	void UpdateStun();
 	void OnStunEnd();
 
+	void UpdateRescue(float DeltaTime);
+	void StartRescue();
+	void EndRescue();
+
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float SprintSpeed = 1200.0f;
 
@@ -115,11 +122,6 @@ protected:
 
 	float MaxWalkSpeed = 0.0f;
 
-	//replace booleans with an enum when they are associated and can not all be true
-	/*bool bIsLoaded = false;
-	bool bIsPullingObject = false;
-	bool bIsThrowingObject = false;*/
-
 	UPROPERTY(VisibleAnywhere, Category = "Throw")
 	ECharacterThrowState CharacterThrowState = ECharacterThrowState::None;
 
@@ -131,6 +133,14 @@ protected:
 
 	FOnMontageBlendingOutStarted BlendingOutDelegate;
 	FOnMontageEnded MontageEndedDelegate;
+
+	//handle fall out of world
+	FVector LastGroundPosition = FVector::ZeroVector; //Last Position on World when OnGround
+	FVector FallOutOfWorldPosition = FVector::ZeroVector; //Position From Player when it Hits KillZ
+	float CurrentRescueTime = 0.0f; // Used to set a timer from Moving Player back to Ground
+	bool bIsPlayerBeingRescued = false;//Set to true in fell out of world
+	UPROPERTY(EditAnywhere, Category = "KillZ")
+	float TimeToRescuePlayer = 3.f;//Set time that takes to put Player back in Ground
 
 private:
 

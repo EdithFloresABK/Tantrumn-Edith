@@ -66,6 +66,12 @@ void ATantrumnCharacterBase::Tick(float DeltaTime)
 		return;
 	}
 
+	if (bIsPlayerBeingRescued)
+	{
+		UpdateRescue(DeltaTime);
+		return;
+	}
+
 	if (CharacterThrowState == ECharacterThrowState::Throwing)
 	{
 		if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
@@ -142,6 +148,22 @@ void ATantrumnCharacterBase::Landed(const FHitResult& Hit)
 	}
 }
 
+void ATantrumnCharacterBase::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode )
+{
+	if (!bIsPlayerBeingRescued && (PrevMovementMode == MOVE_Walking && GetCharacterMovement()->MovementMode == MOVE_Falling))
+	{
+		LastGroundPosition = GetActorLocation() + (GetActorForwardVector() * -100.0f) + (GetActorUpVector() * 100.0f);
+	}
+
+	Super::OnMovementModeChanged(PrevMovementMode, PreviousCustomMode);
+}
+
+void ATantrumnCharacterBase::FellOutOfWorld(const class UDamageType& dmgType)
+{
+	FallOutOfWorldPosition = GetActorLocation();
+	StartRescue();
+}
+
 void ATantrumnCharacterBase::RequestSprintStart()
 {
 	if (!bIsStunned)
@@ -211,6 +233,10 @@ void ATantrumnCharacterBase::SphereCastPlayerView()
 {
 	FVector Location;
 	FRotator Rotation;
+	if (!GetController())
+	{
+		return;
+	}
 	GetController()->GetPlayerViewPoint(Location, Rotation);
 	const FVector PlayerViewForward = Rotation.Vector();
 	const float AdditionalDistance = (Location - GetActorLocation()).Size();
@@ -442,4 +468,30 @@ void ATantrumnCharacterBase::OnStunEnd()
 	StunTime = 0.0f;
 }
 
+void ATantrumnCharacterBase::UpdateRescue(float DeltaTime)
+{
+	CurrentRescueTime += DeltaTime;
+	float Alpha = FMath::Clamp(CurrentRescueTime / TimeToRescuePlayer, 0.0f, 1.0f);
+	FVector NewPlayerLocation = FMath::Lerp(FallOutOfWorldPosition, LastGroundPosition, Alpha);
+	SetActorLocation(NewPlayerLocation);
 
+	if (Alpha >= 1.0f)
+	{
+		EndRescue();
+	}
+}
+
+void ATantrumnCharacterBase::StartRescue()
+{
+	bIsPlayerBeingRescued = true;
+	CurrentRescueTime = 0.0f;
+	GetCharacterMovement()->Deactivate();
+	SetActorEnableCollision(false);
+}
+void ATantrumnCharacterBase::EndRescue()
+{
+	GetCharacterMovement()->Activate();
+	SetActorEnableCollision(true);
+	bIsPlayerBeingRescued = false;
+	CurrentRescueTime = 0.0f;
+}

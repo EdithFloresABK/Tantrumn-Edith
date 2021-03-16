@@ -7,7 +7,7 @@
 
 ATantrumnGameModeBase::ATantrumnGameModeBase()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 void ATantrumnGameModeBase::BeginPlay()
@@ -18,11 +18,6 @@ void ATantrumnGameModeBase::BeginPlay()
 	DisplayCountdown();
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATantrumnGameModeBase::StartGame, GameCountdownDuration, false);
 	//StartGame();
-}
-
-void ATantrumnGameModeBase::Tick(float DeltaTime)
-{
-	DetectPlayerFallingOffWorld(DeltaTime);
 }
 
 EGameState ATantrumnGameModeBase::GetCurrentGameState() const
@@ -58,56 +53,4 @@ void ATantrumnGameModeBase::StartGame()
 	PC->SetInputMode(InputMode);
 	PC->SetShowMouseCursor(false);
 
-}
-
-void ATantrumnGameModeBase::DetectPlayerFallingOffWorld(float DeltaTime)
-{
-	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-
-	if (PlayerPawn->GetMovementComponent()->IsMovingOnGround())
-	{
-		OnGroundLastPosition = PlayerPawn->GetActorLocation();
-		
-	}
-
-	if (PlayerPawn->GetActorLocation().Z <= KillZ)
-	{
-		FallingPosition = PlayerPawn->GetActorLocation();
-		RemovingInputFromPlayer(PlayerPawn);//Also removes collision
-		bIsPlayerBeingRescued = true;
-
-	}
-	if (bIsPlayerBeingRescued)
-	{
-		MovingPlayerToGround(PlayerPawn, DeltaTime);
-	}
-	
-}
-
-void ATantrumnGameModeBase::MovingPlayerToGround(APawn* Player, float DeltaTime)
-{
-	CurrentTime += DeltaTime;
-	float Alpha = FMath::Clamp(CurrentTime / TimeToRescuePlayer, 0.0f, 1.0f);
-	FVector NewPlayerLocation = FMath::Lerp(FallingPosition, OnGroundLastPosition, Alpha);
-	Player->SetActorLocation(NewPlayerLocation);
-
-	if (NewPlayerLocation.Equals(OnGroundLastPosition))
-	{
-		CurrentTime = 0.0f;
-		RestoreInputToPlayer(Player);//Also restores collision
-		bIsPlayerBeingRescued = false;
-	}
-
-}
-
-void ATantrumnGameModeBase::RemovingInputFromPlayer(APawn* Player)
-{
-	Player->GetMovementComponent()->Deactivate();
-	Player->SetActorEnableCollision(false);
-}
-void ATantrumnGameModeBase::RestoreInputToPlayer(APawn* Player)
-
-{
-	Player->GetMovementComponent()->Activate();
-	Player->SetActorEnableCollision(true);
 }
