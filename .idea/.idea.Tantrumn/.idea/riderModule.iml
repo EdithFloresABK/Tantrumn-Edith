@@ -170,6 +170,8 @@
     <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Marketplace/DynamicGravityCharacter" />
     <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Marketplace/ElectronicNodes" />
     <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Marketplace/MagneticPickup" />
+    <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Marketplace/NinjaCharacter" />
+    <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Marketplace/VehicleSystemPlugin" />
     <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Media/AjaMedia" />
     <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Media/AndroidCamera" />
     <content url="file://C:/Program Files/Epic Games/UE_4.26/Engine/Plugins/Media/AndroidMedia" />
