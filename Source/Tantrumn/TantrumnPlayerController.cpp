@@ -17,13 +17,26 @@ static TAutoConsoleVariable<bool> CVarDisplayLaunchInputDelta(
 void ATantrumnPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	GameModeRef = Cast<ATantrumnGameModeBase>(GetWorld()->GetAuthGameMode());
+	//GameModeRef = Cast<ATantrumnGameModeBase>(GetWorld()->GetAuthGameMode());
+	
+}
+
+void ATantrumnPlayerController::ReceivedPlayer()
+{
+	Super::ReceivedPlayer();
+	GameModeRef = GetWorld()->GetAuthGameMode<ATantrumnGameModeBase>();
+	if (ensureMsgf(GameModeRef, TEXT("ATantrumnPlayerController::ReceivedPlayer missing GameMode Reference")))
+	{
+		GameModeRef->ReceivePlayer(this);
+	}
+
 	if (HUDClass)
 	{
 		HUDWidget = CreateWidget(this, HUDClass);
 		if (HUDWidget)
 		{
-			HUDWidget->AddToViewport();
+			//HUDWidget->AddToViewport();
+			HUDWidget->AddToPlayerScreen();
 		}
 	}
 }
@@ -55,7 +68,11 @@ void ATantrumnPlayerController::SetupInputComponent()
 
 void ATantrumnPlayerController::RequestMoveForward(float AxisValue)
 {
-	if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) {return;}
+	/*if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) 
+	{
+		return;
+	}*/
+
 	if (AxisValue != 0.f)
 	{
 		FRotator const ControlSpaceRot = GetControlRotation();
@@ -66,7 +83,11 @@ void ATantrumnPlayerController::RequestMoveForward(float AxisValue)
 
 void ATantrumnPlayerController::RequestMoveRight(float AxisValue)
 {
-	if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) {return;}
+	/*if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) 
+	{
+		return;
+	}*/
+
 	if (AxisValue != 0.f)
 	{
 		FRotator const ControlSpaceRot = GetControlRotation();
@@ -98,14 +119,14 @@ void ATantrumnPlayerController::RequestThrowObject(float AxisValue)
 			{
 				if (fabs(currentDelta) > 0.0f)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Axis: %f LastAxis: %f currentDelta: %f"), AxisValue, LastAxis);
+					UE_LOG(LogTemp, Warning, TEXT("Axis: %f LastAxis: %f currentDelta: %f"), AxisValue, LastAxis, currentDelta);
 				}
 			}
 			LastAxis = AxisValue;
 			const bool IsFlick = fabs(currentDelta) > FlickThreshold;
 			if (IsFlick)
 			{
-				if(AxisValue > 0)
+				if(currentDelta > 0)
 				{
 					TantrumnCharacterBase->RequestThrowObject();
 				}			
@@ -140,7 +161,11 @@ void ATantrumnPlayerController::RequestStopPullObject()
 
 void ATantrumnPlayerController::RequestJump()
 {
-	if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) {return;}
+	//create a function for this
+	//if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) 
+	//{
+	//	return;
+	//}
 	if (GetCharacter())
 	{
 		GetCharacter()->Jump();
@@ -164,7 +189,11 @@ void ATantrumnPlayerController::RequestStopJump()
 
 void ATantrumnPlayerController::RequestCrouchStart()
 {
-	if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) {return;}
+	/*if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) 
+	{
+		return;
+	}*/
+
 	if(!GetCharacter()->GetCharacterMovement()->IsMovingOnGround()) {return;}
 	if(GetCharacter())
 	{
@@ -182,7 +211,10 @@ void ATantrumnPlayerController::RequestCrouchEnd()
 
 void ATantrumnPlayerController::RequestSprintStart()
 {
-	if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) {return;}
+	//if(!GameModeRef || GameModeRef->GetCurrentGameState() != EGameState::Playing) 
+	//{
+	//	return;
+	//}
 	if(ATantrumnCharacterBase* TantrumnCharacterBase = Cast<ATantrumnCharacterBase>(GetCharacter()))
 	{
 		TantrumnCharacterBase->RequestSprintStart();

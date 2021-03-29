@@ -28,7 +28,6 @@ class TANTRUMN_API ATantrumnCharacterBase : public ACharacter, public IInteractI
 public:
 	// Sets default values for this character's properties
 	ATantrumnCharacterBase();
-
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -74,6 +73,31 @@ protected:
 	void SphereCastActorTransform();
 	void LineCastActorTransform();
 	void ProcessTraceResult(const FHitResult& HitResult);
+
+	/*UFUNCTION(Server, Reliable)
+	void PullObject();*/
+
+	//RPC's actions that can need to be done on the server in order to replicate
+	UFUNCTION(Server, Reliable)
+	void ServerPullObject(AThrowableActor* InThrowableActor);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRequestPullObject(bool bIsPulling);
+
+	UFUNCTION(Server, Reliable)
+	void ServerRequestThrowObject();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastRequestThrowObject();
+
+	UFUNCTION(Client, Reliable)
+	void ClientThrowableAttached(AThrowableActor* InThrowableActor);
+
+	UFUNCTION(Server, Reliable)
+	void ServerBeginThrow();
+
+	UFUNCTION(Server, Reliable)
+	void ServerFinishThrow();
 
 	bool PlayThrowMontage();
 	void UnbindMontage();
@@ -125,8 +149,13 @@ protected:
 
 	float MaxWalkSpeed = 0.0f;
 
-	UPROPERTY(VisibleAnywhere, Category = "Throw")
+	
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = OnRep_CharacterThrowState, Category = "Throw")
+	//UPROPERTY(VisibleAnywhere, replicated, Category = "Throw")
 	ECharacterThrowState CharacterThrowState = ECharacterThrowState::None;
+
+	UFUNCTION()
+	void OnRep_CharacterThrowState(const ECharacterThrowState& OldCharacterThrowState);
 
 	UPROPERTY(EditAnywhere, Category = "Throw", meta = (ClampMin = "0.0", Unit = "ms"))
 	float ThrowSpeed = 2000.0f;
