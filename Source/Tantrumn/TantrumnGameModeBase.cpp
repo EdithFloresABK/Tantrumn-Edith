@@ -3,6 +3,7 @@
 
 #include "TantrumnGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 ATantrumnGameModeBase::ATantrumnGameModeBase()
@@ -37,6 +38,10 @@ void ATantrumnGameModeBase::PlayerReachedEnd(APlayerController* PlayerController
 		FInputModeUIOnly InputMode;
 		PlayerController->SetInputMode(InputMode);
 		PlayerController->SetShowMouseCursor(true);
+		if (PlayerController->GetCharacter() && PlayerController->GetCharacter()->GetCharacterMovement())
+		{
+			PlayerController->GetCharacter()->GetCharacterMovement()->DisableMovement();
+		}
 	}
 }
 
@@ -45,7 +50,15 @@ void ATantrumnGameModeBase::AttemptStartGame()
 	if (GetNumPlayers() == NumExpectedPlayers)
 	{
 		DisplayCountdown();
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATantrumnGameModeBase::StartGame, GameCountdownDuration, false);
+		if (GameCountdownDuration > SMALL_NUMBER)
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &ATantrumnGameModeBase::StartGame, GameCountdownDuration, false);
+		}
+		else
+		{
+			StartGame();
+		}
+		
 	}
 }
 
@@ -83,6 +96,19 @@ void ATantrumnGameModeBase::StartGame()
 			FInputModeGameOnly InputMode;
 			PlayerController->SetInputMode(InputMode);
 			PlayerController->SetShowMouseCursor(false);
+		}
+	}
+}
+
+void ATantrumnGameModeBase::RestartPlayer(AController* NewPlayer)
+{
+	Super::RestartPlayer(NewPlayer);
+
+	if (APlayerController* PlayerController = Cast<APlayerController>(NewPlayer))
+	{
+		if (PlayerController->GetCharacter() && PlayerController->GetCharacter()->GetCharacterMovement())
+		{
+			PlayerController->GetCharacter()->GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 		}
 	}
 }

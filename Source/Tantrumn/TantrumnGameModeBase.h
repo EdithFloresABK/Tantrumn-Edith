@@ -19,6 +19,8 @@ enum class EGameState : uint8
 	GameOver	UMETA(DisplayName = "GameOver"),
 };
 
+class AController;
+
 UCLASS()
 class TANTRUMN_API ATantrumnGameModeBase : public AGameModeBase
 {
@@ -30,6 +32,7 @@ public:
 	ATantrumnGameModeBase();
 
 	virtual void BeginPlay() override;
+	virtual void RestartPlayer(AController* NewPlayer) override;
 
 	UFUNCTION(BlueprintCallable)
 	EGameState GetCurrentGameState() const;
@@ -66,5 +69,4 @@ private:
 	void AttemptStartGame();
 	void DisplayCountdown();
 	void StartGame();
-
 };
