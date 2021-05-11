@@ -6,11 +6,12 @@
 	"Modules": [
 		{
 			"Name": "Tantrumn",
-			"Type": "Runtime",
+			"Type": "Developer",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
 				"Engine",
-				"UMG"
+				"UMG",
+				"AIModule"
 			]
 		}
 	]
