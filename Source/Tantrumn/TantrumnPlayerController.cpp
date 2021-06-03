@@ -123,8 +123,8 @@ void ATantrumnPlayerController::SetupInputComponent()
 		InputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Pressed, this, &ATantrumnPlayerController::RequestSprintStart);
 		InputComponent->BindAction(TEXT("Sprint"), EInputEvent::IE_Released, this, &ATantrumnPlayerController::RequestSprintEnd);
 		
-		InputComponent->BindAction(TEXT("PullObject"), EInputEvent::IE_Pressed, this, &ATantrumnPlayerController::RequestPullObject);
-		InputComponent->BindAction(TEXT("PullObject"), EInputEvent::IE_Released, this, &ATantrumnPlayerController::RequestStopPullObject);
+		InputComponent->BindAction(TEXT("PullorAimObject"), EInputEvent::IE_Pressed, this, &ATantrumnPlayerController::RequestPullorAimObject);
+		InputComponent->BindAction(TEXT("PullorAimObject"), EInputEvent::IE_Released, this, &ATantrumnPlayerController::RequestStopPullorAimObject);
 
 		InputComponent->BindAxis(TEXT("MoveForward"), this, &ATantrumnPlayerController::RequestMoveForward);
 		InputComponent->BindAxis(TEXT("MoveRight"), this, &ATantrumnPlayerController::RequestMoveRight);
@@ -210,6 +210,8 @@ void ATantrumnPlayerController::RequestThrowObject(float AxisValue)
 				}
 			}
 			LastAxis = AxisValue;
+			//prevent the case where we hold the axis at the threshold and then release
+			//perhaps rolling average
 			const bool IsFlick = fabs(currentDelta) > FlickThreshold;
 			if (IsFlick)
 			{
@@ -230,7 +232,7 @@ void ATantrumnPlayerController::RequestThrowObject(float AxisValue)
 	}
 }
 
-void ATantrumnPlayerController::RequestPullObject()
+void ATantrumnPlayerController::RequestPullorAimObject()
 {
 	if (!CanProcessRequest())
 	{
@@ -239,15 +241,31 @@ void ATantrumnPlayerController::RequestPullObject()
 	
 	if (ATantrumnCharacterBase* TantrumnCharacterBase = Cast<ATantrumnCharacterBase>(GetCharacter()))
 	{
-		TantrumnCharacterBase->RequestPullObject();
+		if (TantrumnCharacterBase->CanAim())
+		{
+			TantrumnCharacterBase->RequestAim();
+		}
+		else
+		{
+			TantrumnCharacterBase->RequestPullObject();
+		}
+		
 	}
 }
 
-void ATantrumnPlayerController::RequestStopPullObject()
+void ATantrumnPlayerController::RequestStopPullorAimObject()
 {
 	if (ATantrumnCharacterBase* TantrumnCharacterBase = Cast<ATantrumnCharacterBase>(GetCharacter()))
 	{
-		TantrumnCharacterBase->RequestStopPullObject();
+		if (TantrumnCharacterBase->IsAiming())
+		{
+			TantrumnCharacterBase->RequestStopAim();
+		}
+		else
+		{
+			TantrumnCharacterBase->RequestStopPullObject();
+		}
+		
 	}
 }
 
