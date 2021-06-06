@@ -691,31 +691,12 @@ void ATantrumnCharacterBase::OnMontageEnded(UAnimMontage* Montage, bool bInterru
 	}
 	else if (Montage == CelebrateMontage)
 	{
-		if (IsLocallyControlled())
-		{
-			//this shouldn't be here...
-			//display hud, we don't want this for all, so we should broadcast and whoever is intereseted can listen...
-			if (UTantrumnGameInstance* TantrumnGameInstance = GetWorld()->GetGameInstance<UTantrumnGameInstance>())
-			{
-				ATantrumnPlayerController* TantrumnPlayerController = GetController<ATantrumnPlayerController>();
-				if (TantrumnPlayerController)
-				{
-					TantrumnGameInstance->DisplayLevelComplete(TantrumnPlayerController);
-				}
-
-			}
-		}
-
 		if (ATantrumnPlayerState* TantrumnPlayerState = GetPlayerState<ATantrumnPlayerState>())
 		{
 			if (TantrumnPlayerState->IsWinner())
 			{
 				float length = PlayAnimMontage(CelebrateMontage, 1.0f, TEXT("Winner"));
 				ensureAlwaysMsgf(length > 0.f, TEXT("ATantrumnCharacterBase::OnMontageEnded Could Not Player Winner Animation"));
-			}
-			else
-			{
-				//ensureAlwaysMsgf(false, TEXT("ATantrumnCharacterBase::OnMontageEnded Winner Logic Broken"));
 			}
 		}
 	}

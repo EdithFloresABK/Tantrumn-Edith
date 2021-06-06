@@ -11,6 +11,8 @@
 #include "TantrumnGameStateBase.h"
 #include "TantrumnPlayerState.h"
 
+
+
 static TAutoConsoleVariable<bool> CVarDisplayLaunchInputDelta(
 	TEXT("Tantrum.Character.Debug.DisplayLaunchInputDelta"),
 	false,
@@ -36,59 +38,63 @@ void ATantrumnPlayerController::OnUnPossess()
 	UE_LOG(LogTemp, Warning, TEXT("OnUnPossess: %s"), *GetName());
 }
 
-void ATantrumnPlayerController::ClientDisplayCountdown_Implementation(float GameCountdownDuration)
+void ATantrumnPlayerController::ClientDisplayCountdown_Implementation(float GameCountdownDuration, TSubclassOf<UTantrumnGameWidget> InGameWidgetClass)
 {
-	if (UTantrumnGameInstance* TantrumnGameInstance = GetWorld()->GetGameInstance<UTantrumnGameInstance>())
+	if (!TantrumnGameWidget)
 	{
-		TantrumnGameInstance->DisplayCountdown(GameCountdownDuration, this);
+		TantrumnGameWidget = CreateWidget<UTantrumnGameWidget>(this, InGameWidgetClass);
+	}
+
+	if (TantrumnGameWidget)
+	{
+		TantrumnGameWidget->AddToPlayerScreen();
+		TantrumnGameWidget->StartCountdown(GameCountdownDuration, this);
 	}
 }
 
 void ATantrumnPlayerController::ClientRestartGame_Implementation()
 {
-	if (ATantrumnPlayerState* TantrumnPlayerState = GetPlayerState<ATantrumnPlayerState>())
+	if (TantrumnGameWidget)
 	{
-		if (UTantrumnGameInstance* TantrumnGameInstance = GetWorld()->GetGameInstance<UTantrumnGameInstance>())
-		{
-			TantrumnGameInstance->RestartGame(this);
-		}
+		TantrumnGameWidget->RemoveResults();
+		//restore game input 
+		FInputModeGameOnly InputMode;
+		SetInputMode(InputMode);
+		SetShowMouseCursor(false);
 	}
 }
 
 void ATantrumnPlayerController::ClientReachedEnd_Implementation()
 {
-	//this needs to be named better, it's just displaying the end screen
-	//this will be seperate, as it will come after the montage...
-	//client gets hud authority needs to replicate the montage
-
 	if (ATantrumnCharacterBase* TantrumnCharacterBase = Cast<ATantrumnCharacterBase>(GetCharacter()))
 	{
 		TantrumnCharacterBase->ServerPlayCelebrateMontage();
 		TantrumnCharacterBase->GetCharacterMovement()->DisableMovement();
-	}
 
-	if (UTantrumnGameInstance* TantrumnGameInstance = GetWorld()->GetGameInstance<UTantrumnGameInstance>())
-	{
-		//call the level complete event for the widget...
-	}
+		FInputModeUIOnly InputMode;
+		SetInputMode(InputMode);
+		SetShowMouseCursor(true);
 
-	FInputModeUIOnly InputMode;
-	SetInputMode(InputMode);
-	SetShowMouseCursor(true);
+		if (TantrumnGameWidget)
+		{
+			TantrumnGameWidget->DisplayResults();
+		}
+	}
+}
+
+void ATantrumnPlayerController::OnRetrySelected()
+{
+	ServerRestartLevel();
 }
 
 void ATantrumnPlayerController::ServerRestartLevel_Implementation()
 {
-	//GetWorld()->ServerTravel(TEXT("?restart"));
 	ATantrumnGameModeBase* TantrumnGameMode = GetWorld()->GetAuthGameMode<ATantrumnGameModeBase>();
 	if (ensureMsgf(TantrumnGameMode, TEXT("ATantrumnPlayerController::ServerRestartLevel_Implementation Invalid GameMode")))
 	{
 		TantrumnGameMode->RestartGame();
 		
 	}
-	/*RestartPlayer()
-	GetWorld()->GetCurrentLevel()->GetName()
-	GetWorld()->ServerTravel(TEXT("?restart"));*/
 }
 
 void ATantrumnPlayerController::ReceivedPlayer()
